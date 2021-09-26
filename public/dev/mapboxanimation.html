@@ -1,0 +1,167 @@
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title></title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.17.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.17.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+</head>
+<body>
+
+<style>
+.overlay {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.overlay button {
+    font:600 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    background-color: #3386c0;
+    color: #fff;
+    display: inline-block;
+    margin: 0;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.overlay button:hover {
+    background-color:#4ea0da;
+}
+</style>
+<script src='//api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js' charset='utf-8'></script>
+
+<div id='map'></div>
+<div class='overlay'>
+    <button id='replay'>Replay</button>
+</div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoieXJwbXNnIiwiYSI6ImNraTRmOHhzbTBwZG4ycnN5bTJubGE5YmIifQ.AueC3aecaLAyWeG2BslKfg';
+
+var map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v8',
+    center: [-121.9692, 37.5301],
+    hash: true,
+    zoom: 8
+});
+
+// San Francisco
+var origin = [-122.414, 37.776];
+
+// San Jose
+var destination = [-121.894, 37.333];
+
+// A simple line from origin to destination.
+var route = {
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "geometry": {
+            "type": "LineString",
+            "coordinates": [
+                origin,
+                destination
+            ]
+        }
+    }]
+}
+
+// A single point that animates along the route.
+// Coordinates are initially set to origin.
+var point = {
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": origin
+        }
+    }]
+}
+
+// Calculate the distance in kilometers between route start/end point
+var lineDistance = turf.lineDistance(route.features[0], 'kilometers');
+
+map.on('click', function(e) {
+  console.log(e.lngLat);  
+});
+
+map.on('load', function () {
+    // Add a source and layer displaying a point which will be animated in a circle.
+    map.addSource('route', {
+        "type": "geojson",
+        "data": route
+    });
+
+    map.addSource('point', {
+        "type": "geojson",
+        "data": point
+    });
+
+    map.addLayer({
+        "id": "route",
+        "source": "route",
+        "type": "line",
+        "paint": {
+            "line-width": 2,
+            "line-color": "#007cbf"
+        }
+    });
+
+    map.addLayer({
+        "id": "point",
+        "source": "point",
+        "type": "symbol",
+        "layout": {
+            "icon-image": "airport-15",
+            "icon-rotate": 140
+        }
+    });
+
+    var counter = 0;
+    function animate() {
+        counter = counter + 1;
+
+        // Update point geometry to a new position based on the animation
+        // And the distance the point has travelled along the route.
+        var updatedPoint = turf.along(route.features[0], counter / 1000 * lineDistance, 'kilometers');
+        point.features = [updatedPoint];
+
+        // Update the source with this new data.
+        map.getSource('point').setData(point);
+
+        // Request the next frame of the animation so long as destination.
+        // has not been reached.
+        if (point.features[0].geometry.coordinates[0] !== destination[0]) {
+            requestAnimationFrame(animate);
+        }
+    }
+
+    document.getElementById('replay').addEventListener('click', function() {
+        // Set the coordinates of the original point back to origin
+        point.features[0].geometry.coordinates = origin;
+
+        // Update the source layer
+        map.getSource('point').setData(point);
+
+        counter = 0;
+
+        // Restart the animation.
+        animate(counter);
+    });
+
+    // Start the animation.
+    animate(counter);
+});
+</script>
+
+</body>
+</html>

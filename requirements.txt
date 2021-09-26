@@ -1,0 +1,26 @@
+# Testing
+pytest==4.6.6
+pytest-cov==2.6.1
+coverage==4.5.4
+mock==1.0.1
+
+# Utils
+click==7.0
+decorator==4.4.1
+flask==1.1.1
+gunicorn==19.7.1
+ibmcloudenv==0.2.1
+itsdangerous==1.1.0
+livereload==2.6.1
+jsonpath-rw==1.4.0
+jinja2==2.11.0
+markupsafe==1.1.1
+prometheus-client==0.7.1
+flask-wtf==0.14
+h3==3.4.3
+folium==0.11.0
+flake8==2.1.0
+colorama==0.3.9
+branca==0.3.0
+numpy
+requests

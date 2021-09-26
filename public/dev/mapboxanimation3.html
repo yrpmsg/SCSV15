@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Display driving directions</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
+<style>
+	body { margin: 0; padding: 0; }
+	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+<link
+rel="stylesheet"
+href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
+type="text/css"
+/>
+<div id="map"></div>
+ 
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoieXJwbXNnIiwiYSI6ImNraTRmOHhzbTBwZG4ycnN5bTJubGE5YmIifQ.AueC3aecaLAyWeG2BslKfg';
+var map = new mapboxgl.Map({
+container: 'map',
+style: 'mapbox://styles/mapbox/streets-v11',
+center: [-79.45, 43.65],
+zoom: 8
+});
+
+// San Francisco
+var origin = [-122.414, 37.776];
+
+// San Jose
+var destination = [-121.894, 37.333];
+
+var directions = new mapboxgl.Directions({
+unit: 'metric', // Use the metric system to display distances.
+profile: 'walking', // Set the initial profile to walking.
+container: 'directions', // Specify an element thats not the map container.
+proximity: [-79.45, 43.65] // Give search results closer to these coordinates higher priority.
+});
+map.on('load', function() {
+directions.setOrigin('Toronto, Ontario'); // On load, set the origin to "Toronto, Ontario".
+directions.setDestination('Montreal, Quebec'); // On load, set the destination to "Montreal, Quebec".
+});
+directions.on('route', function(e) {
+console.log(e.route); // Logs the current route shown in the interface.
+});
+ 
+
+</script>
+ 
+</body>
+</html>

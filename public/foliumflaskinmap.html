@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.input {
+  background-color: skyblue;
+  color: black;
+  overflow: hidden; 
+  height: 100%; 
+  width: 15%; 
+  float: left; 
+}
+.map {
+  background-color: powderblue;
+  color: black;
+  overflow: hidden; 
+  height: 100%; 
+  width: 75%; 
+  float: left; 
+}
+.files {
+  background-color: lightblue;
+  color: black;
+  overflow: hidden; 
+  height: 100%; 
+  width: 10%; 
+  float: right; 
+}
+h1 {text-align: center;}
+.mainbody {
+  background-color: powderblue;
+  color: black;
+  overflow: hidden; 
+  height: 200; 
+  width: 100%; 
+  float: left; 
+}
+h2 {text-align: center;}
+.mainbody {
+  background-color: powderblue;
+  color: black;
+  overflow: hidden; 
+  height: 100; 
+  width: 100%; 
+  float: left; 
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  padding: 8px;
+  background-color: lightblue;
+}
+</style> 
+</head>
+	<body>
+		<h1>Supply Chain Simulator Tool</h1>
+		<ul>
+  			<li><a href="GetInput">Setup Module</a></li>
+  			<li><a href="PopMigration">Population Migration Module</a></li>
+  			<li><a href="Agri">Farming Guidance Module</a></li>
+		</ul>
+
+
+	<div class="input">
+    <p><b>Inputs</b></p>
+    	<form method="post" >
+        	<p>Center Latitude <input name="latitude" value="{{ request.form['latitude'] }}"/> 
+        	<br>Center Longitude <input name="longitude" value="{{ request.form['longitude'] }}" />
+        	<br>Map zoom level
+            <input name="zoomlevel" value="{{ request.form['zoomlevel'] }}"/>
+            <hr>            	
+            <br>n - Number of nd plots per zero level plot = 4<sup>n</sup><br>
+            <input name="n" type="range" value="1" min="0" max="13" oninput="this.nextElementSibling.value = this.value">
+			<output>1</output>
+			<br>Number of Rings
+            <input name="radius" type="range" value="1" min="0" max="20" oninput="this.nextElementSibling.value = this.value">
+			<output>1</output>				
+			<br>Show labels for zero level plots
+            <input type="radio" id="show" name="zlplotlabel" value="show" checked>
+			<label for="show">Show</label><br>			
+			<input type="radio" id="dontshow" name="zlplotlabel" value="dontshow">
+			<label for="dontshow">Do not show</label><br>
+			<input type="radio" id="shownd" name="zlplotlabel" value="shownd">
+			<label for="dontshow">Show nd plots</label>
+            <p><input type="submit" value="Get Map" /></p>
+         </form>
+    </div>
+    <div class="files">
+    <p>Requested Inter Facility Distance (in KMs): <br> 0.152 * 2 <sup>n</sup> <br> {{ requestedifd }} </p>
+    <p>Approximate H3 Resolution for this IFD:<br> {{ resolution }}
+    <p>Download Templates for Data Preparation Here:</p>
+    <p><a href="data/DC.csv" download="data/DC.csv" >DC list</a></p>	
+    <p><a href="data/Facilities.csv" download="data/Facilities.csv" >Facilities list</a></p>	
+    <p><a href="data/ZLPlot.csv" download="data/ZLPlot.csv" >Zero Level Plot list</a></p>	
+    <p><a href="data/ndPlot.csv" download="data/ndPlot.csv" >nd Plot list</a></p>
+    <p><a href="data/ImpactZones.csv" download="data/ImpactZones.csv" >Impact Zones</a></p>
+    <p><a href="data/L1Plot.csv" download="data/L1Plot.csv" >Level 1 Plots</a></p>
+    </div>	
+	<div class="map">
+     <iframe id="map" src="/Map" frameborder="0" scrolling="no"                           
+                                    style="overflow: hidden; height: 1000; 
+                                                width: 100%; float: left; " height="1000" width="100%"
+                                   align="left">
+    </div>
+    </body>
+</html>
